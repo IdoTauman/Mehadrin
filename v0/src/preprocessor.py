@@ -61,3 +61,22 @@ def removeComments(code: str) -> str:
 
     return res
     
+def trimUnnecessaryWhitespaces(code: str) -> str:
+    res: str = ""
+    isInString = False
+
+    i = 0
+    codeSize = len(code)
+
+    while (i < codeSize):
+        if code[i] == '\"' and i != 0 and code[i-1] != '\\':
+            isInString = not isInString
+
+        if not isInString and i > 0 and code[i].isspace() and res[-1] == code[i]:
+            i += 1
+            continue
+
+        res += code[i]
+        i += 1
+
+    return res

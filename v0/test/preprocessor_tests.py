@@ -26,16 +26,10 @@ with open(path, "r") as file:
 
     printBarrier("remove comment")
 
-
-    #splitted = content.split("\n")
-    #strings = PreP.computeStrings(content)
-    #for tup in strings:
-    #    print(content[tup[0]:tup[1]])
-
-    #printBarrier()
-
-
     print(PreP.removeComments(content))
 
-printBarrier()
+    printBarrier("clear unneccery whitespaces")
 
+    print(PreP.trimUnnecessaryWhitespaces(content))
+
+    printBarrier()
