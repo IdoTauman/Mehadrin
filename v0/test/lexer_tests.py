@@ -23,27 +23,27 @@ def basic_parenthesis_test():
     expected = ['(', '[', ']', ')', ';']
     print_test_result(expected, tokens, 2)
 
-    remove(TEST_FILE_PATH)
-
 def basic_string_char_test():
     write(TEST_FILE_PATH, '"שלום, עולם!"')
     tokens = get_tokens()
-    expected = ['String("שלום, עולם!")', 'Semicolon']
+    expected = ['String("שלום, עולם!")', ';']
     print_test_result(expected, tokens, 3)
 
     write(TEST_FILE_PATH, "'א'")
     tokens = get_tokens()
-    expected = ['Char(\'א\')', 'Semicolon']
+    expected = ['Char(\'א\')', ';']
     print_test_result(expected, tokens, 4)
 
     write(TEST_FILE_PATH, "'\\ט'")
     tokens = get_tokens()
-    expected = ["Char('\t')", 'Semicolon']
+    expected = ["Char('\t')", ';']
     print_test_result(expected, tokens, 5)
 
     write(TEST_FILE_PATH, '"מחרוזת" "מחרוזת"')
     tokens = get_tokens()
-    expected = ['String("מחרוזת")', 'String("מחרוזת")', 'Semicolon']
+    expected = ['String("מחרוזת")', 'String("מחרוזת")', ';']
 
 basic_parenthesis_test()
 basic_string_char_test()
+
+remove(TEST_FILE_PATH)
