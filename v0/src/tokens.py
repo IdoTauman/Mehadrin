@@ -7,9 +7,11 @@ class Token(ABC):
 
     def __repr__(self) -> str:
         if isinstance(self, Literal):
-            return f"Literal({self.value})"
-
-        
+            if isinstance(self, IntLiteral): return f'Int({self.value})'
+            elif isinstance(self, FloatLiteral): return f'Float({self.value})'
+            elif isinstance(self, CharLiteral): return f'Char(\'{self.value}\')'
+            elif isinstance(self, StringLiteral): return f'String("{self.value}")'
+            else: return f'Literal({self.value})'
 
         if isinstance(self, Operator):
             OPERATORS = {
