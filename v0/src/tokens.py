@@ -5,10 +5,71 @@ class Token(ABC):
     def __init__(self):
         super().__init__()
 
+    def __repr__(self) -> str:
+        if isinstance(self, Literal):
+            return f"Literal({self.value})"
+
+        
+
+        if isinstance(self, Operator):
+            OPERATORS = {
+            PlusOperator: '+',
+            MinusOperator: '-',
+            MulOperator: '*',
+            DivOperator: '/',
+            ModOperator: '%',
+
+            AssignmentOperator: '=',
+
+            EqualOperator: '==',
+            NeqOperator: '!=',
+            LessthanOperator: '<',
+            LeqOperator: '<=',
+            GreaterthanOperator: '>',
+            GeqOperator: '>=',
+            LogicalAndOperator: '&&',
+            LogicalOrOperator: '||',
+            LogicalNotOperator: '!',
+
+            AddressOperator: '&',
+            DerefOperator: '*',
+            UplusOperator: '+',
+            UminusOperator: '-',
+
+            StarToken: '*',
+            AmpersandToken: '&',
+            PlusToken: '+',
+            MinusToken: '-',
+        }
+            return OPERATORS[self.__class__]
+
+        SYMBOLS = {
+            Semicolon: ';',
+            OpenParenthesis: '(',
+            CloseParenthesis: ')',
+            OpenBracket: '[',
+            CloseBracket: ']',
+            OpenBrace: '{',
+            CloseBrace: '}',
+            Comma: ',',
+            Dot: '.',
+            Arrow: '->',
+            Colon: ':',
+        }
+
+        if self.__class__ in SYMBOLS: return SYMBOLS[self.__class__]
+
+        if isinstance(self, Keyword): return self.value.name.lower()
+
+        if isinstance(self, Identifier): return f"Identifier({self.name})"
+
+        return f"<{self.__class__.__name__}>"
+
 
 
 class Literal(Token):
     def __init__(self):
+        self.value = None
         super().__init__()
 
 class IntLiteral(Literal):
@@ -207,18 +268,18 @@ class Identifier(Token):
 
 
 # Ambiguous classes that get resolved by the parser
-class StarToken(Token):
+class StarToken(Operator):
     def __init__(self):
         super().__init__()
 
-class AmpersandToken(Token):
+class AmpersandToken(Operator):
     def __init__(self):
         super().__init__()
 
-class PlusToken(Token):
+class PlusToken(Operator):
     def __init__(self):
         super().__init__()
 
-class MinusToken(Token):
+class MinusToken(Operator):
     def __init__(self):
         super().__init__()
