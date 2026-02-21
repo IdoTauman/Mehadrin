@@ -44,7 +44,7 @@ def lexer(input_path: str) -> list[Token]:
                 # Skip whitespace and handle ASI
                 if char.isspace():
                     if char == '\n':
-                        is_balanced = not any(open_counts.values())
+                        is_balanced = not open_counts['paren'] and not open_counts['bracket']
                         if is_balanced and tokens and isValidEndLine(tokens[-1]):
                             tokens.append(Semicolon())
                     i += 1
