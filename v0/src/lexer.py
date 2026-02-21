@@ -124,8 +124,13 @@ def lexer(input_path: str) -> list[Token]:
 
                 # Single character symbols/operators
                 if char in PARENTHESIS:
-                    cls, key, delta = PARENTHESIS[char]
-                    tokens.append(cls())
+                    if char in '}': # Closing blocks
+                        is_balanced = not any(open_counts.values())
+                        if tokens and isValidEndLine(tokens[-1]):
+                            tokens.append(Semicolon())
+                    
+                    cclass, key, delta = PARENTHESIS[char]
+                    tokens.append(cclass())
                     open_counts[key] += delta
                     i += 1
                     continue

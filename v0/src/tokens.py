@@ -228,7 +228,6 @@ class Colon(Token):
 
 
 class KeywordEnum(Enum):
-    NUM_KEYWORDS = 25
     INT = 1
     LONG = 2
     SHORT = 3
