@@ -198,7 +198,7 @@ class Keyword(Token):
 
 
 
-class Indentifier(Token):
+class Identifier(Token):
     def __init__(self, name: str):
         if not name: raise ValueError("Got empty string")
         self.name = name
