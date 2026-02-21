@@ -30,6 +30,34 @@ def lexer(input_path: str) -> list[Token]:
         '}': (CloseBrace, "brace", -1),
     }
 
+    OPERATORS = {
+        '+': PlusToken,
+        '-': MinusToken,
+        '*': StarToken,
+        '/': DivOperator,
+        '%': ModOperator,
+
+        '=': AssignmentOperator,
+        '==': EqualOperator,
+        '!=': NeqOperator,
+        '<': LessthanOperator,
+        '<=': LeqOperator,
+        '>': GreaterthanOperator,
+        '>=': GeqOperator,
+
+        '&&': LogicalAndOperator,
+        '||': LogicalOrOperator,
+        '!': LogicalNotOperator,
+
+        '&': AmpersandToken,
+        '->': Arrow,
+        '.': Dot,
+
+        ';': Semicolon,
+        ':': Colon,
+        ',': Comma,
+    }
+
     buffer = ''
 
     with open(input_path, 'r', encoding='utf-8') as f:
@@ -141,6 +169,11 @@ def lexer(input_path: str) -> list[Token]:
                     cclass, key, delta = PARENTHESIS[char]
                     tokens.append(cclass())
                     open_counts[key] += delta
+                    i += 1
+                    continue
+
+                if char in OPERATORS:
+                    tokens.append(OPERATORS[char]())
                     i += 1
                     continue
 
