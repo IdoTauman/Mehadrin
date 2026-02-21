@@ -1,4 +1,4 @@
-from .tokens import *
+from src.tokens import *
 from .util import error
 
 def isValidEndLine(t: Token) -> bool:

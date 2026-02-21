@@ -13,8 +13,7 @@ class Token(ABC):
             elif isinstance(self, StringLiteral): return f'String("{self.value}")'
             else: return f'Literal({self.value})'
 
-        if isinstance(self, Operator):
-            OPERATORS = {
+        OPERATORS = {
             PlusOperator: '+',
             MinusOperator: '-',
             MulOperator: '*',
@@ -43,6 +42,8 @@ class Token(ABC):
             PlusToken: '+',
             MinusToken: '-',
         }
+
+        if self.__class__ in OPERATORS:
             return OPERATORS[self.__class__]
 
         SYMBOLS = {
@@ -97,7 +98,7 @@ class FloatLiteral(Literal):
 
 
 
-class Operator(ABC):
+class Operator(Token, ABC):
     def __init__(self):
         super().__init__()
 
