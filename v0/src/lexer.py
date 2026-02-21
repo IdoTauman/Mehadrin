@@ -15,11 +15,7 @@ def isValidEndLine(t: Token) -> bool:
 
 def lexer(input_path: str) -> list[Token]:
     tokens: list[Token] = []
-
     open_counts = {"paren": 0, "bracket": 0, "brace": 0}
-
-    open_string = False
-    open_char = False
 
     PARENTHESIS = {
         '(': (OpenParenthesis, "paren", 1),
@@ -31,143 +27,105 @@ def lexer(input_path: str) -> list[Token]:
     }
 
     OPERATORS = {
-        '+': PlusToken,
-        '-': MinusToken,
-        '*': StarToken,
-        '/': DivOperator,
-        '%': ModOperator,
-
-        '=': AssignmentOperator,
-        '==': EqualOperator,
-        '!=': NeqOperator,
-        '<': LessthanOperator,
-        '<=': LeqOperator,
-        '>': GreaterthanOperator,
-        '>=': GeqOperator,
-
-        '&&': LogicalAndOperator,
-        '||': LogicalOrOperator,
-        '!': LogicalNotOperator,
-
-        '&': AmpersandToken,
-        '->': Arrow,
-        '.': Dot,
-
-        ';': Semicolon,
-        ':': Colon,
-        ',': Comma,
+        '==': EqualOperator, '!=': NeqOperator, '<=': LeqOperator, 
+        '>=': GeqOperator, '&&': LogicalAndOperator, '||': LogicalOrOperator,
+        '->': Arrow, '+': PlusToken, '-': MinusToken, '*': StarToken,
+        '/': DivOperator, '%': ModOperator, '=': AssignmentOperator,
+        '<': LessthanOperator, '>': GreaterthanOperator, '!': LogicalNotOperator,
+        '&': AmpersandToken, '.': Dot, ';': Semicolon, ':': Colon, ',': Comma,
     }
-
-    buffer = ''
 
     with open(input_path, 'r', encoding='utf-8') as f:
         for line in f:
             i = 0
             while i < len(line):
-                char: str = line[i]
+                char = line[i]
 
-                if (open_string):
-                    if char == '\n':
-                        error("Unterminated string literal")
-
-                    if char == '"':
-                        tokens.append(StringLiteral(buffer))
-                        buffer = ''
-                        i += 1
-                        open_string = False
-                        continue
-
-                    if char == '\\':
-                        if i + 1 >= len(line):
-                            error("Trailing backslash at the end of line")
-
-                        next = line[i + 1]
-                        if next == '\'':
-                            buffer += '\''
-                        elif next == '\"':
-                            buffer += '\"'
-                        elif next == '\\':
-                            buffer += '\\'
-                        elif next == 'א':
-                            buffer += '\a'
-                        elif next == 'ב':
-                            buffer += '\b'
-                        elif next == 'נ':
-                            buffer += '\n'
-                        elif next == 'ר':
-                            buffer += '\r'
-                        elif next == 'ט':
-                            buffer += '\t'
-                        else:
-                            error(f"Invalid escape sequence: \\{next}")
-                        i += 2
-                        continue
-
-                    buffer += char
-                    i += 1
-                    continue
-
-
-                if (open_char):
-                    if char == '\n':
-                        error("Unterminated char literal")
-
-                    if char == "'":
-                        if len(buffer) == 0:
-                            error("Empty char literal")
-                        tokens.append(CharLiteral(buffer))
-                        buffer = ''
-                        i += 1
-                        open_char = False
-                        continue
-
-                    if char == '\\':
-                        if i + 1 >= len(line):
-                            error("Trailing backslash at the end of line")
-
-                        next = line[i + 1]
-                        if next == '\'':
-                            buffer += '\''
-                        elif next == '\"':
-                            buffer += '\"'
-                        elif next == '\\':
-                            buffer += '\\'
-                        elif next == 'א':
-                            buffer += '\a'
-                        elif next == 'ב':
-                            buffer += '\b'
-                        elif next == 'נ':
-                            buffer += '\n'
-                        elif next == 'ר':
-                            buffer += '\r'
-                        elif next == 'ט':
-                            buffer += '\t'
-                        else:
-                            error(f"Invalid escape sequence: \\{next}")
-                        i += 2
-                        if len(buffer) > 1:
-                            error("Char literal longer than one character")
-                        continue
-
-                    buffer += char
-                    i += 1
-
-                    if len(buffer) > 1:
-                        error("Char literal longer than one character")
-                    continue
-
-
+                # Skip whitespace and handle ASI
                 if char.isspace():
                     if char == '\n':
                         is_balanced = not any(open_counts.values())
-                        if is_balanced and (not tokens or isValidEndLine(tokens[-1])):
+                        if is_balanced and tokens and isValidEndLine(tokens[-1]):
                             tokens.append(Semicolon())
                     i += 1
                     continue
 
+                # String literals
+                if char == '"':
+                    i += 1
+                    buffer = ""
+                    while i < len(line) and line[i] != '"':
+                        if line[i] == '\n': error("Unterminated string literal")
+                        if line[i] == '\\':
+                            # Handle escape sequences
+                            if i + 1 >= len(line): error("Trailing backslash")
+                            esc = line[i+1]
+                            mapping = {'\'':'\'', '"':'"', '\\':'\\', 'א':'\a', 'ב':'\b', 'נ':'\n', 'ר':'\r', 'ט':'\t'}
+                            if esc in mapping:
+                                buffer += mapping[esc]
+                                i += 2
+                            else: error(f"Invalid escape: \\{esc}")
+                        else:
+                            buffer += line[i]
+                            i += 1
+                    if i >= len(line): error("Unterminated string literal")
+                    tokens.append(StringLiteral(buffer))
+                    i += 1
+                    continue
+
+                # Char literals
+                if char == "'":
+                    i += 1
+                    buffer = ""
+                    if i < len(line) and line[i] == '\\':
+                        # Escape sequences
+                        esc = line[i+1]
+                        mapping = {'\'':'\'', '"':'"', '\\':'\\', 'א':'\a', 'ב':'\b', 'נ':'\n', 'ר':'\r', 'ט':'\t'}
+                        if esc in mapping:
+                            buffer += mapping[esc]
+                            i += 2
+                        else: error(f"Invalid escape: \\{esc}")
+                    elif i < len(line) and line[i] != "'":
+                        buffer = line[i]
+                        i += 1
+                    
+                    if i >= len(line) or line[i] != "'": error("Unterminated or invalid char literal")
+                    if len(buffer) == 0: error("Empty char literal")
+                    tokens.append(CharLiteral(buffer))
+                    i += 1
+                    continue
+
+                # Number literals
+                if char.isdigit() or (char == '.' and i + 1 < len(line) and line[i+1].isdigit()):
+                    num_buffer = ""
+                    has_dot = False
+                    if char == '.': # Leading dot
+                        num_buffer = "0."
+                        has_dot = True
+                        i += 1
+                    
+                    while i < len(line) and (line[i].isdigit() or line[i] == '.'):
+                        if line[i] == '.':
+                            if has_dot: error("Multiple decimal points in number")
+                            has_dot = True
+                        num_buffer += line[i]
+                        i += 1
+                    
+                    if has_dot: tokens.append(FloatLiteral(float(num_buffer)))
+                    else: tokens.append(IntLiteral(int(num_buffer)))
+                    continue
+
+                # Multi character operators
+                two_char = line[i:i+2]
+                if two_char in OPERATORS:
+                    tokens.append(OPERATORS[two_char]())
+                    i += 2
+                    continue
+
+                # Single character symbols/operators
                 if char in PARENTHESIS:
-                    cclass, key, delta = PARENTHESIS[char]
-                    tokens.append(cclass())
+                    cls, key, delta = PARENTHESIS[char]
+                    tokens.append(cls())
                     open_counts[key] += delta
                     i += 1
                     continue
@@ -177,16 +135,26 @@ def lexer(input_path: str) -> list[Token]:
                     i += 1
                     continue
 
-                if char == '"':
-                    open_string = True
-                    i += 1
-                    continue
-                elif char == "'":
-                    open_char = True
-                    i += 1
+                # Identifiers
+                if char.isalpha() or char == '_' or ('א' <= char <= 'ת'):
+                    start = i
+                    while i < len(line) and (line[i].isalnum() or line[i] == '_' or ('א' <= line[i] <= 'ת')):
+                        i += 1
+                    word = line[start:i]
+
+                    # Keywords
+                    try:
+                        kw_enum = KeywordEnum[word.upper()]
+                        tokens.append(Keyword(kw_enum))
+                    except KeyError:
+                        tokens.append(Identifier(word))
                     continue
 
-    if not tokens or not isinstance(tokens[-1], Semicolon): tokens.append(Semicolon())
+                error(f"Unexpected character: {char}")
+                i += 1
+
+    # End of File Semicolon
+    if not tokens or not isinstance(tokens[-1], Semicolon):
+        tokens.append(Semicolon())
 
     return tokens
-
