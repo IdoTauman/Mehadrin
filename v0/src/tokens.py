@@ -76,24 +76,24 @@ class Literal(Token):
 
 class IntLiteral(Literal):
     def __init__(self, val: int):
-        self.value: int = val
         super().__init__()
+        self.value: int = val
 
 class CharLiteral(Literal):
     def __init__(self, val: str):
         if not len(val) == 1: raise ValueError(f"Expected char, got string {val}")
-        self.value: str = val
         super().__init__()
+        self.value: str = val
 
 class StringLiteral(Literal):
     def __init__(self, val: str):
-        self.value = val
         super().__init__()
+        self.value = val
 
 class FloatLiteral(Literal):
     def __init__(self, val: float):
-        self.value = val
         super().__init__()
+        self.value = val
 
 
 
