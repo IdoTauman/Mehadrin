@@ -2,7 +2,7 @@ from os import remove
 
 from src.tokens import *
 from src.lexer import lexer
-from .util import write, print_test_result
+from .util import write, print_test_result, print_test_suite_title
 
 TEST_FILE_PATH = 'test.txt'
 
@@ -86,6 +86,7 @@ def complex_combination_test():
     ]
     print_test_result(expected, tokens, 13)
 
+print_test_suite_title("Lexer Tests")
 basic_parenthesis_test()
 basic_string_char_test()
 basic_operator_test()
