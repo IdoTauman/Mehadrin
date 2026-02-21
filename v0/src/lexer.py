@@ -2,6 +2,9 @@ from src.tokens import *
 from .util import error
 
 def isValidEndLine(t: Token) -> bool:
+    """ 
+    Returns if a token can be at the end of a line. Used for ASI
+    """
     literal_types = (IntLiteral, CharLiteral, FloatLiteral, StringLiteral, Identifier)
     closing_types = (CloseParenthesis, CloseBracket, CloseBrace)
 
