@@ -25,4 +25,25 @@ def basic_parenthesis_test():
 
     remove(TEST_FILE_PATH)
 
+def basic_string_char_test():
+    write(TEST_FILE_PATH, '"שלום, עולם!"')
+    tokens = get_tokens()
+    expected = ['String("שלום, עולם!")', 'Semicolon']
+    print_test_result(expected, tokens, 3)
+
+    write(TEST_FILE_PATH, "'א'")
+    tokens = get_tokens()
+    expected = ['Char(\'א\')', 'Semicolon']
+    print_test_result(expected, tokens, 4)
+
+    write(TEST_FILE_PATH, "'\\ט'")
+    tokens = get_tokens()
+    expected = ["Char('\t')", 'Semicolon']
+    print_test_result(expected, tokens, 5)
+
+    write(TEST_FILE_PATH, '"מחרוזת" "מחרוזת"')
+    tokens = get_tokens()
+    expected = ['String("מחרוזת")', 'String("מחרוזת")', 'Semicolon']
+
 basic_parenthesis_test()
+basic_string_char_test()
