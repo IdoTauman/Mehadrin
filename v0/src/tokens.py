@@ -62,7 +62,36 @@ class Token(ABC):
 
         if self.__class__ in SYMBOLS: return SYMBOLS[self.__class__]
 
-        if isinstance(self, Keyword): return self.value.name.lower()
+        if isinstance(self, Keyword):
+            # Mapping enum values back to their Hebrew names for display
+            KEYWORDS = {
+                KeywordEnum.שלם: "int",
+                KeywordEnum.ארוך: "long",
+                KeywordEnum.קצר: "short",
+                KeywordEnum.ריק: "void",
+                KeywordEnum.תו: "char",
+                KeywordEnum.מסומן: "signed",
+                KeywordEnum.לאמסומן: "unsigned",
+                KeywordEnum.צף: "float",
+                KeywordEnum.כפול: "double",
+                KeywordEnum.קבוע: "const",
+                KeywordEnum.מבנה: "struct",
+                KeywordEnum.איחוד: "union",
+                KeywordEnum.הגדרסוג: "typedef",
+                KeywordEnum.מספור: "enum",
+                KeywordEnum.שבור: "break",
+                KeywordEnum.החלף: "switch",
+                KeywordEnum.מקרה: "case",
+                KeywordEnum.המשך: "continue",
+                KeywordEnum.ברירתמחדל: "default",
+                KeywordEnum.עשה: "do",
+                KeywordEnum.כאשר: "while",
+                KeywordEnum.אם: "if",
+                KeywordEnum.אחרת: "else",
+                KeywordEnum.עבור: "for",
+                KeywordEnum.החזר: "return",
+            }
+            return KEYWORDS[self.value]
 
         if isinstance(self, Identifier): return f"Identifier({self.name})"
 
@@ -228,31 +257,31 @@ class Colon(Token):
 
 
 class KeywordEnum(Enum):
-    INT = 1
-    LONG = 2
-    SHORT = 3
-    VOID = 4
-    CHAR = 5
-    SIGNED = 6
-    UNSIGNED = 7
-    FLOAT = 8
-    DOUBLE = 9
-    CONST = 10
-    STRUCT = 11
-    UNION = 12
-    TYPEDEF = 13
-    ENUM = 14
-    BREAK = 15
-    SWITCH = 16
-    CASE = 17
-    CONTINUE = 18
-    DEFAULT = 19
-    DO = 20
-    WHILE = 21
-    IF = 22
-    ELSE = 23
-    FOR = 24
-    RETURN = 25
+    שלם = 1
+    ארוך = 2
+    קצר = 3
+    ריק = 4
+    תו = 5
+    מסומן = 6
+    לאמסומן = 7
+    צף = 8
+    כפול = 9
+    קבוע = 10
+    מבנה = 11
+    איחוד = 12
+    הגדרסוג = 13
+    מספור = 14
+    שבור = 15
+    החלף = 16
+    מקרה = 17
+    המשך = 18
+    ברירתמחדל = 19
+    עשה = 20
+    כאשר = 21
+    אם = 22
+    אחרת = 23
+    עבור = 24
+    החזר = 25
 
 class Keyword(Token):
     def __init__(self, val: KeywordEnum):

@@ -12,7 +12,7 @@ def isValidEndLine(t: Token) -> bool:
         return True
 
     if isinstance(t, Keyword):
-        return t.value in {KeywordEnum.BREAK, KeywordEnum.CONTINUE, KeywordEnum.RETURN}
+        return t.value in {KeywordEnum.שבור, KeywordEnum.המשך, KeywordEnum.החזר}
 
     return False
 

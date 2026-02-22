@@ -67,18 +67,18 @@ def basic_number_test():
     print_test_result(expected, tokens, 10)
 
 def basic_identifier_keyword_test():
-    write(TEST_FILE_PATH, "int x = 10")
+    write(TEST_FILE_PATH, "שלם x = 10")
     tokens = get_tokens()
     expected = ['int', 'Identifier(x)', '=', 'Int(10)', ';']
     print_test_result(expected, tokens, 11)
 
-    write(TEST_FILE_PATH, "return מספר_123")
+    write(TEST_FILE_PATH, "החזר מספר_123")
     tokens = get_tokens()
     expected = ['return', 'Identifier(מספר_123)', ';']
     print_test_result(expected, tokens, 12)
 
 def complex_combination_test():
-    write(TEST_FILE_PATH, "if(מספר==10){return 0}")
+    write(TEST_FILE_PATH, "אם(מספר==10){החזר 0}")
     tokens = get_tokens()
     expected = [
         'if', '(', 'Identifier(מספר)', '==', 'Int(10)', ')', 
