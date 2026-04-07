@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from enum import Enum
 
 class Token(ABC):
@@ -97,6 +97,13 @@ class Token(ABC):
 
         return f"<{self.__class__.__name__}>"
 
+    @abstractmethod
+    def to_c(self) -> str:
+        """
+        every subclass has a straight translation to c
+        """
+        pass
+
 
 
 class Literal(Token):
@@ -109,21 +116,48 @@ class IntLiteral(Literal):
         super().__init__()
         self.value: int = val
 
+    def to_c(self) -> str:
+        return str(self.value)
+
 class CharLiteral(Literal):
     def __init__(self, val: str):
         if not len(val) == 1: raise ValueError(f"Expected char, got string {val}")
         super().__init__()
         self.value: str = val
 
+    def to_c(self) -> str:
+        c_escapes = {
+            "\a": r"\a", "\b": r"\b", "\f": r"\f",
+            "\n": r"\n", "\r": r"\r", "\t": r"\t",
+            "\v": r"\v", "\\": r"\\", "'":  r"\'"
+        }
+        return f"L'{c_escapes.get(self.value, self.value)}'"
+
 class StringLiteral(Literal):
     def __init__(self, val: str):
         super().__init__()
         self.value = val
 
+    def to_c(self) -> str:
+        c_escapes = {
+            "\a": r"\a", "\b": r"\b", "\f": r"\f",
+            "\n": r"\n", "\r": r"\r", "\t": r"\t",
+            "\v": r"\v", "\\": r"\\", '"':  r'\"'
+        }
+        
+        result = ""
+        for char in self.value:
+            result += c_escapes.get(char, char)
+            
+        return f'L"{result}"'
+
 class FloatLiteral(Literal):
     def __init__(self, val: float):
         super().__init__()
         self.value = val
+
+    def to_c(self) -> str:
+        return str(self.value)
 
 
 
@@ -135,77 +169,134 @@ class PlusOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "+"
+
 class MinusOperator(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "-"
 
 class MulOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "*"
+
 class DivOperator(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "/"
 
 class ModOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "%"
+
 class AssignmentOperator(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "="
 
 class AddressOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "&"
+
 class DerefOperator(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "*"
 
 class UplusOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "+"
+
 class UminusOperator(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "-"
 
 class LogicalNotOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "!"
+
 class LogicalAndOperator(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "&&"
 
 class LogicalOrOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "||"
+
 class EqualOperator(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "=="
 
 class LessthanOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "<"
+
 class LeqOperator(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "<="
 
 class GreaterthanOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return ">"
+
 class GeqOperator(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return ">="
+
 class NeqOperator(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "!="
 
 
 
@@ -213,45 +304,79 @@ class Semicolon(Token):
     def __init__(self) -> None:
         super().__init__()
 
+    def to_c(self) -> str:
+        return ";"
+
 class OpenParenthesis(Token):
     def __init__(self) -> None:
         super().__init__()
+
+    def to_c(self) -> str:
+        return "("
 
 class CloseParenthesis(Token):
     def __init__(self) -> None:
         super().__init__()
 
+    def to_c(self) -> str:
+        return ")"
+
 class OpenBracket(Token):
     def __init__(self) -> None:
         super().__init__()
+
+    def to_c(self) -> str:
+        return "["
 
 class CloseBracket(Token):
     def __init__(self) -> None:
         super().__init__()
 
+    def to_c(self) -> str:
+        return "]"
+
 class OpenBrace(Token):
     def __init__(self) -> None:
         super().__init__()
+
+    def to_c(self) -> str:
+        return "{"
 
 class CloseBrace(Token):
     def __init__(self) -> None:
         super().__init__()
 
+    def to_c(self) -> str:
+        return "}"
+
+
 class Comma(Token):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return ","
 
 class Dot(Token):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "."
+
 class Arrow(Token):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "->"
+
 class Colon(Token):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return ":"
 
 
 
@@ -288,6 +413,39 @@ class Keyword(Token):
         self.value: KeywordEnum = val
         super().__init__()
 
+    def to_c(self) -> str:
+        TRANSLATIONS = {
+            KeywordEnum.שלם: "int",
+            KeywordEnum.ארוך: "long",
+            KeywordEnum.קצר: "short",
+            KeywordEnum.ריק: "void",
+            KeywordEnum.תו: "wchar_t", # supports hebrew characters
+            KeywordEnum.מסומן: "signed",
+            KeywordEnum.לאמסומן: "unsigned",
+            KeywordEnum.צף: "float",
+            KeywordEnum.כפול: "double",
+            KeywordEnum.קבוע: "const",
+
+            KeywordEnum.מבנה: "struct",
+            KeywordEnum.איחוד: "union",
+            KeywordEnum.הגדרסוג: "typedef",
+            KeywordEnum.מספור: "enum",
+
+            KeywordEnum.שבור: "break",
+            KeywordEnum.החלף: "switch",
+            KeywordEnum.מקרה: "case",
+            KeywordEnum.המשך: "continue",
+            KeywordEnum.ברירתמחדל: "default",
+            KeywordEnum.עשה: "do",
+            KeywordEnum.כאשר: "while",
+            KeywordEnum.אם: "if",
+            KeywordEnum.אחרת: "else",
+            KeywordEnum.עבור: "for",
+            KeywordEnum.החזר: "return",
+        }
+
+        return TRANSLATIONS.get(self.value, self.value.name)
+
 
 
 class Identifier(Token):
@@ -296,6 +454,9 @@ class Identifier(Token):
         self.name = name
         super().__init__()
 
+    def to_c(self) -> str:
+        return self.name
+
 
 
 # Ambiguous classes that get resolved by the parser
@@ -303,14 +464,26 @@ class StarToken(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "*"
+
 class AmpersandToken(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "&"
 
 class PlusToken(Operator):
     def __init__(self):
         super().__init__()
 
+    def to_c(self) -> str:
+        return "+"
+
 class MinusToken(Operator):
     def __init__(self):
         super().__init__()
+
+    def to_c(self) -> str:
+        return "-"
