@@ -1,4 +1,26 @@
-# Mehadrin
+# Mehadrin ל (Lamed) Compiler - Phase 1
+
+This is the documentation for the **Mehadrin** transpiler. Currently, the compiler supports a "Lazy" translation mode that performs a direct token-to-token swap from Hebrew to C.
+
+### 🚀 How to Run
+
+Use the `mehadrin` command (or your driver script) with the following flags:
+
+```bash
+# General Syntax
+python mehadrin.py <filename>.ל -l -o <output_binary>
+
+# Example
+python mehadrin.py שלום_עולם.ל --lazy -o app.out
+
+- `-l`/`--lazy`: Required for the current proof of concept. Tells the compiler to skip the full AST generation and perform a classic token to C mapping
+- `-o`: (Optional) The name of the output binary
+- `-k`/`--keep`: Keep the intermediate C source file
+
+C standard library functions are currently in english only.
+You should set the locale inside your main functions with `setlocale(LC_ALL, "");` if you are using hebrew strings.
+
+
 
 Translations:
 types:
