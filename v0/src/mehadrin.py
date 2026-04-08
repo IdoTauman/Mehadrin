@@ -11,6 +11,7 @@ def run_compiler():
     parser = argparse.ArgumentParser(description="Mehadrin ל (Lamed) Transpiler")
     parser.add_argument("filename", help="The .ל source file to compile")
     parser.add_argument("-l", "--lazy", action="store_true", help="Use lazy space-separated POC translation")
+    parser.add_argument("-k", "--keep", action="store_true", help="Keep the intermediate C source file")
     parser.add_argument("-o", "--output", dest="output_filename", help="The name of the output binary")
     
     args = parser.parse_args()
@@ -28,7 +29,6 @@ def run_compiler():
             "#include <stdlib.h>",
             "#include <wchar.h>",
             "#include <locale.h>",
-            "setlocale(LC_ALL, "");",
             "\n"
         ]
 
@@ -61,8 +61,8 @@ def run_compiler():
     except FileNotFoundError:
         print("Error: GCC is not installed or not in PATH.")
     finally:
-        # os.remove(temp_c_file)
-        pass
+        if not args.keep:
+            os.remove(temp_c_file)
 
 if __name__ == "__main__":
     run_compiler()
