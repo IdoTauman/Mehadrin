@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 
+from bidi.algorithm import get_display
+
 class Token(ABC):
     def __init__(self):
         super().__init__()
@@ -139,16 +141,16 @@ class StringLiteral(Literal):
         self.value = val
 
     def to_c(self) -> str:
+        visual_text = get_display(self.value)
+
         c_escapes = {
             "\a": r"\a", "\b": r"\b", "\f": r"\f",
             "\n": r"\n", "\r": r"\r", "\t": r"\t",
             "\v": r"\v", "\\": r"\\", '"':  r'\"'
         }
         
-        result = ""
-        for char in self.value:
-            result += c_escapes.get(char, char)
-            
+        result = "".join(c_escapes.get(str(char), str(char)) for char in visual_text)
+
         return f'L"{result}"'
 
 class FloatLiteral(Literal):

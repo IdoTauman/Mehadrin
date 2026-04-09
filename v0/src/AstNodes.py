@@ -1,6 +1,6 @@
 from abc import ABC
 
-from tokens import Token, Literal
+from src.tokens import Token, Literal
 
 
 class AstNode(ABC):
