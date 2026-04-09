@@ -3,8 +3,8 @@ import subprocess
 import os
 import argparse
 
-from tokens import *
-from lexer import lexer
+from src.tokens import *
+from src.lexer import lexer
 
 
 def run_compiler():

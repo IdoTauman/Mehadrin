@@ -1,5 +1,5 @@
 from src.tokens import *
-from .util import error
+from src.util import error
 
 def isValidEndLine(t: Token) -> bool:
     """ 
