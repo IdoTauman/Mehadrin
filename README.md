@@ -2,7 +2,7 @@
 
 This is the documentation for the **Mehadrin** transpiler. Currently, the compiler supports a "Lazy" translation mode that performs a direct token-to-token swap from Hebrew to C.
 
-### 🚀 How to Run
+### How to Run
 
 Use the `mehadrin` command (or your driver script) with the following flags:
 
@@ -19,6 +19,8 @@ python mehadrin.py שלום_עולם.ל --lazy -o app.out
 
 C standard library functions are currently in english only.
 You should set the locale inside your main functions with `setlocale(LC_ALL, "");` if you are using hebrew strings.
+
+You currently can't add preprocessor directives inside the .ל source, if you need a specific include add that to the file generated with -k and compile manually.
 
 
 
